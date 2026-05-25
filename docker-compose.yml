@@ -28,10 +28,10 @@ services:
   web:
     build: .
     command: >
-      sh -c "python manage.py migrate --settings=config.settings.development &&
-             python manage.py runserver 0.0.0.0:8000 --settings=config.settings.development"
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 2 --timeout 120 --access-logfile -"
     volumes:
-      - .:/app
       - media_files:/app/media
     ports:
       - "8000:8000"
@@ -39,8 +39,10 @@ services:
       - DEBUG=True
       - DATABASE_URL=postgres://eventpro:eventpro_secret@db:5432/eventpro
       - REDIS_URL=redis://redis:6379/0
-      - SECRET_KEY=dev-secret-key-change-in-production
-      - DJANGO_SETTINGS_MODULE=config.settings.development
+      - SECRET_KEY=dev-secret-key-change-in-production-please
+      - DJANGO_SETTINGS_MODULE=config.settings.production
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+      - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
     depends_on:
       db:
         condition: service_healthy
@@ -49,14 +51,16 @@ services:
 
   celery:
     build: .
-    command: celery -A config worker -l INFO
+    command: celery -A config worker -l INFO --concurrency 2
     volumes:
-      - .:/app
+      - media_files:/app/media
     environment:
       - DATABASE_URL=postgres://eventpro:eventpro_secret@db:5432/eventpro
       - REDIS_URL=redis://redis:6379/0
-      - SECRET_KEY=dev-secret-key-change-in-production
-      - DJANGO_SETTINGS_MODULE=config.settings.development
+      - SECRET_KEY=dev-secret-key-change-in-production-please
+      - DJANGO_SETTINGS_MODULE=config.settings.production
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+      - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
     depends_on:
       db:
         condition: service_healthy
@@ -67,16 +71,19 @@ services:
     build: .
     command: celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
-      - .:/app
+      - media_files:/app/media
     environment:
       - DATABASE_URL=postgres://eventpro:eventpro_secret@db:5432/eventpro
       - REDIS_URL=redis://redis:6379/0
-      - SECRET_KEY=dev-secret-key-change-in-production
-      - DJANGO_SETTINGS_MODULE=config.settings.development
+      - SECRET_KEY=dev-secret-key-change-in-production-please
+      - DJANGO_SETTINGS_MODULE=config.settings.production
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+      - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
     depends_on:
-      - db
-      - redis
-      - web
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
 volumes:
   postgres_data:
