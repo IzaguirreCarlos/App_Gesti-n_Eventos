@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Asistentes — {{ event.title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-10">
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <a href="{% url 'dashboard:index' %}" class="text-primary-600 text-sm hover:underline">← Dashboard</a>
+      <h1 class="text-2xl font-bold text-gray-900 mt-1">{{ event.title }}</h1>
+      <p class="text-gray-500">Gestión de asistentes</p>
+    </div>
+    <a href="{% url 'dashboard:export_csv' event.slug %}" class="btn-secondary">⬇ Exportar CSV</a>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    <div class="card p-4 text-center border-l-4 border-green-500">
+      <p class="text-2xl font-bold text-gray-900">{{ stats.confirmed }}</p>
+      <p class="text-sm text-gray-500">Confirmados</p>
+    </div>
+    <div class="card p-4 text-center border-l-4 border-blue-500">
+      <p class="text-2xl font-bold text-gray-900">{{ stats.checked_in }}</p>
+      <p class="text-sm text-gray-500">Check-in</p>
+    </div>
+    <div class="card p-4 text-center border-l-4 border-yellow-500">
+      <p class="text-2xl font-bold text-gray-900">{{ stats.waitlisted }}</p>
+      <p class="text-sm text-gray-500">En espera</p>
+    </div>
+    <div class="card p-4 text-center border-l-4 border-red-500">
+      <p class="text-2xl font-bold text-gray-900">{{ stats.cancelled }}</p>
+      <p class="text-sm text-gray-500">Cancelados</p>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="card overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asistente</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Check-in</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        {% for reg in registrations %}
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-sm font-bold">{{ reg.user.first_name|first|upper }}</div>
+              <div>
+                <p class="text-sm font-medium text-gray-900">{{ reg.user.get_full_name }}</p>
+                <p class="text-xs text-gray-500">{{ reg.user.email }}</p>
+              </div>
+            </div>
+          </td>
+          <td class="px-6 py-4">
+            <span class="badge {% if reg.status == 'confirmed' %}bg-green-100 text-green-700{% elif reg.status == 'waitlisted' %}bg-yellow-100 text-yellow-700{% elif reg.status == 'cancelled' %}bg-red-100 text-red-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+              {{ reg.get_status_display }}
+            </span>
+          </td>
+          <td class="px-6 py-4 text-sm">
+            {% if reg.checked_in %}<span class="text-green-600 font-medium">✓ Sí</span>{% else %}<span class="text-gray-400">—</span>{% endif %}
+          </td>
+          <td class="px-6 py-4"><code class="text-xs bg-gray-100 px-2 py-1 rounded">{{ reg.confirmation_code }}</code></td>
+          <td class="px-6 py-4 text-sm text-gray-500">{{ reg.registration_date|date:"d M Y" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="px-6 py-10 text-center text-gray-400">No hay asistentes registrados aún</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

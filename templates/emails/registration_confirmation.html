@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f3f4f6;margin:0;padding:0;}
+.container{max-width:600px;margin:40px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,.07);}
+.header{background:linear-gradient(135deg,#6366f1,#4338ca);padding:40px 32px;text-align:center;}
+.header h1{color:#fff;font-size:24px;margin:0;}
+.body{padding:32px;}
+.code{background:#f0f4ff;border:2px dashed #6366f1;border-radius:12px;padding:20px;text-align:center;margin:24px 0;}
+.code p{font-size:28px;font-weight:800;color:#4338ca;letter-spacing:4px;margin:0;}
+.footer{background:#f9fafb;padding:20px 32px;text-align:center;color:#9ca3af;font-size:12px;}
+.btn{display:inline-block;background:#6366f1;color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:700;margin:16px 0;}
+</style></head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>✅ Registro Confirmado</h1>
+    <p style="color:#c7d2fe;margin:8px 0 0">EventPro</p>
+  </div>
+  <div class="body">
+    <p style="color:#374151;font-size:16px;">Hola <strong>{{ user.get_first_name }}</strong>,</p>
+    <p style="color:#6b7280;">Tu registro para el siguiente evento ha sido confirmado:</p>
+
+    <div style="background:#f9fafb;border-radius:12px;padding:20px;margin:20px 0;">
+      <h2 style="color:#111827;margin:0 0 8px;">{{ event.title }}</h2>
+      <p style="color:#6b7280;margin:4px 0;">📅 {{ event.start_date|date:"d F Y, H:i" }}</p>
+      {% if event.location %}<p style="color:#6b7280;margin:4px 0;">📍 {{ event.location }}</p>{% endif %}
+      {% if event.virtual_link %}<p style="color:#6b7280;margin:4px 0;">🌐 <a href="{{ event.virtual_link }}" style="color:#6366f1;">Unirse al evento</a></p>{% endif %}
+    </div>
+
+    <div class="code">
+      <p style="color:#6b7280;font-size:12px;margin-bottom:8px;">TU CÓDIGO DE CONFIRMACIÓN</p>
+      <p>{{ registration.confirmation_code }}</p>
+    </div>
+
+    <p style="color:#6b7280;font-size:14px;">Guarda este código. Lo necesitarás para el check-in.</p>
+    <p style="color:#6b7280;font-size:14px;">¡Nos vemos en el evento!</p>
+    <p style="color:#111827;font-weight:600;">El equipo de EventPro 🎉</p>
+  </div>
+  <div class="footer">
+    <p>EventPro — Plataforma de Gestión de Eventos</p>
+    <p>Si no realizaste este registro, ignora este correo.</p>
+  </div>
+</div>
+</body></html>

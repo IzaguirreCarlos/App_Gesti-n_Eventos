@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Iniciar sesión{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <a href="{% url 'events:home' %}" class="inline-flex items-center gap-2 text-primary-600 font-bold text-2xl mb-4">
+        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+        EventPro
+      </a>
+      <h1 class="text-2xl font-bold text-gray-900">Bienvenido de nuevo</h1>
+      <p class="text-gray-500 mt-1">Inicia sesión en tu cuenta</p>
+    </div>
+
+    <div class="card p-8">
+      <form method="post" class="space-y-5">
+        {% csrf_token %}
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          {{ form.username }}
+          {% if form.username.errors %}<p class="text-red-500 text-xs mt-1">{{ form.username.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+          {{ form.password }}
+          {% if form.password.errors %}<p class="text-red-500 text-xs mt-1">{{ form.password.errors.0 }}</p>{% endif %}
+        </div>
+        {% if form.non_field_errors %}
+        <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+          <p class="text-red-600 text-sm">{{ form.non_field_errors.0 }}</p>
+        </div>
+        {% endif %}
+        <button type="submit" class="btn-primary w-full justify-center py-3 text-base">Iniciar sesión</button>
+      </form>
+      <div class="mt-6 text-center">
+        <p class="text-gray-500 text-sm">¿No tienes cuenta? <a href="{% url 'users:register' %}" class="text-primary-600 font-semibold hover:underline">Regístrate gratis</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

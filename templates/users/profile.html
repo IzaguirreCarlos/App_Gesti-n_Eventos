@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-10">
+  <h1 class="text-3xl font-bold text-gray-900 mb-8">Mi Perfil</h1>
+  <div class="card p-8">
+    <div class="flex items-center gap-4 mb-8">
+      {% if user.avatar %}
+      <img src="{{ user.avatar.url }}" class="w-20 h-20 rounded-full object-cover border-4 border-primary-100">
+      {% else %}
+      <div class="w-20 h-20 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-3xl font-bold">
+        {{ user.first_name|first|upper }}
+      </div>
+      {% endif %}
+      <div>
+        <h2 class="text-xl font-bold text-gray-900">{{ user.get_full_name }}</h2>
+        <p class="text-gray-500">{{ user.email }}</p>
+        <span class="badge bg-primary-100 text-primary-700 mt-1">{{ user.get_role_display }}</span>
+      </div>
+    </div>
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      {% for field in form %}
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<p class="text-red-500 text-xs mt-1">{{ field.errors.0 }}</p>{% endif %}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn-primary">Guardar cambios</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f3f4f6;margin:0;}
+.container{max-width:600px;margin:40px auto;background:#fff;border-radius:16px;overflow:hidden;}
+.header{background:#ef4444;padding:40px 32px;text-align:center;}
+.header h1{color:#fff;font-size:24px;margin:0;}
+.body{padding:32px;}
+.footer{background:#f9fafb;padding:20px;text-align:center;color:#9ca3af;font-size:12px;}
+</style></head>
+<body>
+<div class="container">
+  <div class="header"><h1>❌ Evento Cancelado</h1></div>
+  <div class="body">
+    <p>Hola <strong>{{ user.first_name }}</strong>,</p>
+    <p>Lamentamos informarte que el evento <strong>{{ event.title }}</strong> ha sido cancelado.</p>
+    <p>Tu registro (<strong>{{ registration.confirmation_code }}</strong>) ha sido cancelado automáticamente.</p>
+    <p>Disculpa los inconvenientes. Puedes explorar otros eventos en la plataforma.</p>
+    <p>El equipo de EventPro</p>
+  </div>
+  <div class="footer"><p>EventPro — Plataforma de Gestión de Eventos</p></div>
+</div>
+</body></html>

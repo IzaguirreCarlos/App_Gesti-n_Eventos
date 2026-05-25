@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Mis Inscripciones{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-10">
+  <h1 class="text-3xl font-bold text-gray-900 mb-8">Mis Inscripciones</h1>
+  <div class="space-y-4">
+    {% for reg in registrations %}
+    <div class="card p-5 flex items-center justify-between hover:shadow-md transition">
+      <div class="flex-1">
+        <h3 class="font-bold text-gray-900">{{ reg.event.title }}</h3>
+        <p class="text-sm text-gray-500 mt-1">📅 {{ reg.event.start_date|date:"d M Y, H:i" }}</p>
+        <p class="text-xs text-gray-400 mt-1">Código: <strong>{{ reg.confirmation_code }}</strong></p>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="badge {% if reg.status == 'confirmed' %}bg-green-100 text-green-700{% elif reg.status == 'waitlisted' %}bg-yellow-100 text-yellow-700{% elif reg.status == 'cancelled' %}bg-red-100 text-red-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+          {{ reg.get_status_display }}
+        </span>
+        <a href="{% url 'events:detail' reg.event.slug %}" class="text-primary-600 text-sm hover:underline">Ver evento</a>
+        {% if reg.status == 'confirmed' %}
+        <form method="post" action="{% url 'registrations:cancel' reg.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="text-red-500 text-sm hover:underline" onclick="return confirm('¿Cancelar?')">Cancelar</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <div class="text-center py-16 text-gray-400">
+      <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      <p class="font-medium">No tienes inscripciones</p>
+      <a href="{% url 'events:list' %}" class="btn-primary mt-4 inline-flex">Explorar eventos</a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

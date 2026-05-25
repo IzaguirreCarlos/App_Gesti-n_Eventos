@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Calendario de Eventos{% endblock %}
+
+{% block extra_head %}
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css' rel='stylesheet' />
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-10">
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">Calendario de Eventos</h1>
+      <p class="text-gray-500 mt-1">Vista mensual, semanal y diaria</p>
+    </div>
+    {% if user.is_authenticated and user.is_organizer %}
+    <a href="{% url 'events:create' %}" class="btn-primary">+ Crear evento</a>
+    {% endif %}
+  </div>
+
+  <div class="card p-6">
+    <div id="calendar"></div>
+  </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const calendarEl = document.getElementById('calendar');
+  const calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    locale: 'es',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+    },
+    buttonText: {
+      today: 'Hoy',
+      month: 'Mes',
+      week: 'Semana',
+      day: 'Día',
+      list: 'Lista'
+    },
+    events: {
+      url: '{% url "events:calendar_data" %}',
+      method: 'GET',
+      failure: function() {
+        alert('Error al cargar los eventos del calendario');
+      }
+    },
+    eventClick: function(info) {
+      window.location.href = info.event.url;
+      info.jsEvent.preventDefault();
+    },
+    eventDidMount: function(info) {
+      info.el.setAttribute('title', info.event.title);
+    },
+    height: 'auto',
+    aspectRatio: 1.8,
+    eventDisplay: 'block',
+    dayMaxEvents: 3,
+    themeSystem: 'standard',
+  });
+  calendar.render();
+});
+</script>
+{% endblock %}
+{% endblock %}

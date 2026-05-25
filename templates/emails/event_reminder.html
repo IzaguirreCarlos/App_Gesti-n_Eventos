@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f3f4f6;margin:0;}
+.container{max-width:600px;margin:40px auto;background:#fff;border-radius:16px;overflow:hidden;}
+.header{background:linear-gradient(135deg,#f59e0b,#d97706);padding:40px 32px;text-align:center;}
+.header h1{color:#fff;font-size:24px;margin:0;}
+.body{padding:32px;}
+.footer{background:#f9fafb;padding:20px;text-align:center;color:#9ca3af;font-size:12px;}
+</style></head>
+<body>
+<div class="container">
+  <div class="header"><h1>🔔 Recordatorio de Evento</h1></div>
+  <div class="body">
+    <p>Hola <strong>{{ user.first_name }}</strong>,</p>
+    <p>Te recordamos que mañana tienes el evento:</p>
+    <h2 style="color:#111827;">{{ event.title }}</h2>
+    <p>📅 {{ event.start_date|date:"d F Y, H:i" }}</p>
+    {% if event.location %}<p>📍 {{ event.location }}</p>{% endif %}
+    <p>Tu código: <strong>{{ registration.confirmation_code }}</strong></p>
+    <p>¡Nos vemos mañana!</p>
+  </div>
+  <div class="footer"><p>EventPro</p></div>
+</div>
+</body></html>
