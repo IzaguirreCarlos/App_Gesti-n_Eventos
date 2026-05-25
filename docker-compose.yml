@@ -1,5 +1,14 @@
 version: '3.9'
 
+x-common-env: &common-env
+  DATABASE_URL: postgres://eventpro:eventpro_secret@db:5432/eventpro
+  REDIS_URL: redis://redis:6379/0
+  SECRET_KEY: dev-secret-key-change-in-production-please
+  DJANGO_SETTINGS_MODULE: config.settings.production
+  ALLOWED_HOSTS: localhost,127.0.0.1,0.0.0.0
+  EMAIL_BACKEND: django.core.mail.backends.console.EmailBackend
+  DEBUG: "True"
+
 services:
   db:
     image: postgres:16-alpine
@@ -25,63 +34,66 @@ services:
       timeout: 5s
       retries: 5
 
-  web:
+  migrate:
     build: .
-    command: >
-      sh -c "python manage.py migrate &&
-             python manage.py collectstatic --noinput &&
-             gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 2 --timeout 120 --access-logfile -"
-    volumes:
-      - media_files:/app/media
-    ports:
-      - "8000:8000"
+    command: python manage.py migrate --noinput
     environment:
-      - DEBUG=True
-      - DATABASE_URL=postgres://eventpro:eventpro_secret@db:5432/eventpro
-      - REDIS_URL=redis://redis:6379/0
-      - SECRET_KEY=dev-secret-key-change-in-production-please
-      - DJANGO_SETTINGS_MODULE=config.settings.production
-      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
-      - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+      <<: *common-env
     depends_on:
       db:
         condition: service_healthy
+
+  web:
+    build: .
+    command: >
+      gunicorn config.wsgi:application
+      --bind 0.0.0.0:8000
+      --workers 2
+      --timeout 120
+      --access-logfile -
+    volumes:
+      - media_files:/app/media
+      - static_files:/app/staticfiles
+    ports:
+      - "8000:8000"
+    environment:
+      <<: *common-env
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
       redis:
         condition: service_healthy
 
   celery:
     build: .
-    command: celery -A config worker -l INFO --concurrency 2
+    command: >
+      celery -A config worker
+      -l INFO
+      --concurrency 2
+      -E
     volumes:
       - media_files:/app/media
     environment:
-      - DATABASE_URL=postgres://eventpro:eventpro_secret@db:5432/eventpro
-      - REDIS_URL=redis://redis:6379/0
-      - SECRET_KEY=dev-secret-key-change-in-production-please
-      - DJANGO_SETTINGS_MODULE=config.settings.production
-      - ALLOWED_HOSTS=localhost,127.0.0.1
-      - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+      <<: *common-env
     depends_on:
-      db:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
       redis:
         condition: service_healthy
 
   celery-beat:
     build: .
-    command: celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    command: >
+      celery -A config beat
+      -l INFO
+      --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
       - media_files:/app/media
     environment:
-      - DATABASE_URL=postgres://eventpro:eventpro_secret@db:5432/eventpro
-      - REDIS_URL=redis://redis:6379/0
-      - SECRET_KEY=dev-secret-key-change-in-production-please
-      - DJANGO_SETTINGS_MODULE=config.settings.production
-      - ALLOWED_HOSTS=localhost,127.0.0.1
-      - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+      <<: *common-env
     depends_on:
-      db:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
       redis:
         condition: service_healthy
 
@@ -89,3 +101,4 @@ volumes:
   postgres_data:
   redis_data:
   media_files:
+  static_files:
