@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: eventpro-web
+    name: izag-web
     env: python
     buildCommand: "./build.sh"
     startCommand: "./start.sh"
@@ -14,11 +14,11 @@ services:
         value: "False"
       - key: DATABASE_URL
         fromDatabase:
-          name: eventpro-db
+          name: izag-db
           property: connectionString
       - key: REDIS_URL
         fromService:
-          name: eventpro-redis
+          name: izag-redis
           type: redis
           property: connectionString
       - key: ALLOWED_HOSTS
@@ -38,12 +38,12 @@ services:
       - key: EMAIL_HOST_PASSWORD
         sync: false
       - key: DEFAULT_FROM_EMAIL
-        value: "EventPro <noreply@eventpro.app>"
+        value: "Izag Gestión Eventos <noreply@izag-eventos.com>"
       - key: PYTHON_VERSION
         value: "3.12.0"
 
   - type: worker
-    name: eventpro-celery
+    name: izag-celery
     env: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "celery -A config worker -l INFO --concurrency 2"
@@ -52,21 +52,21 @@ services:
         value: config.settings.production
       - key: SECRET_KEY
         fromService:
-          name: eventpro-web
+          name: izag-web
           type: web
           envVarKey: SECRET_KEY
       - key: DATABASE_URL
         fromDatabase:
-          name: eventpro-db
+          name: izag-db
           property: connectionString
       - key: REDIS_URL
         fromService:
-          name: eventpro-redis
+          name: izag-redis
           type: redis
           property: connectionString
 
   - type: worker
-    name: eventpro-celery-beat
+    name: izag-celery-beat
     env: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler"
@@ -75,26 +75,26 @@ services:
         value: config.settings.production
       - key: SECRET_KEY
         fromService:
-          name: eventpro-web
+          name: izag-web
           type: web
           envVarKey: SECRET_KEY
       - key: DATABASE_URL
         fromDatabase:
-          name: eventpro-db
+          name: izag-db
           property: connectionString
       - key: REDIS_URL
         fromService:
-          name: eventpro-redis
+          name: izag-redis
           type: redis
           property: connectionString
 
 databases:
-  - name: eventpro-db
-    databaseName: eventpro
-    user: eventpro
+  - name: izag-db
+    databaseName: izag
+    user: izag
     plan: free
 
-  - name: eventpro-redis
+  - name: izag-redis
     type: redis
     plan: free
     ipAllowList: []

@@ -1,5 +1,5 @@
 """
-Base settings for EventPro SaaS Platform
+Base settings for Izag Gestión Eventos SaaS Platform
 """
 import os
 from datetime import timedelta
@@ -185,7 +185,7 @@ EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='EventPro <noreply@eventpro.com>')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Izag Gestión Eventos <noreply@izag-eventos.com>')
 
 # Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'tailwind'
@@ -193,8 +193,8 @@ CRISPY_TEMPLATE_PACK = 'tailwind'
 
 # DRF Spectacular
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'EventPro API',
-    'DESCRIPTION': 'Professional SaaS Event Management Platform API',
+    'TITLE': 'Izag Gestión Eventos API',
+    'DESCRIPTION': 'Plataforma SaaS de Gestión de Eventos API',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
@@ -204,5 +204,5 @@ CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:
 CORS_ALLOW_CREDENTIALS = True
 
 # App settings
-EVENTPRO_MAX_EVENTS_FREE_PLAN = 3
-EVENTPRO_MAX_ATTENDEES_FREE_PLAN = 100
+IZAG_MAX_EVENTS_FREE_PLAN = 3
+IZAG_MAX_ATTENDEES_FREE_PLAN = 100

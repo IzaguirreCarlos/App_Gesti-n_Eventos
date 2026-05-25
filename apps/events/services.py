@@ -1,7 +1,7 @@
 """
 Event business logic — Service Layer
 """
-from django.db import transaction
+from django.db import transaction, models
 from django.core.exceptions import ValidationError
 from .models import Event, Category
 
@@ -45,7 +45,7 @@ class EventService:
         ).select_related('user')
 
         for reg in registrations:
-            send_event_cancellation_email.delay(reg.id)
+            send_event_cancellation_email.delay(str(reg.id))
 
         return event
 
@@ -59,10 +59,6 @@ class EventService:
     @staticmethod
     def decrement_attendees(event: Event) -> None:
         """Atomically decrement attendee count."""
-        from django.db import models as m
         Event.objects.filter(pk=event.pk, current_attendees__gt=0).update(
-            current_attendees=m.F('current_attendees') - 1
+            current_attendees=models.F('current_attendees') - 1
         )
-
-
-from django.db import models

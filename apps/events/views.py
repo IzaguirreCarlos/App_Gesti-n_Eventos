@@ -64,6 +64,8 @@ def calendar_events_api(request):
     """Return events as JSON for FullCalendar."""
     start = request.GET.get('start')
     end = request.GET.get('end')
+    if not start or not end:
+        return JsonResponse([], safe=False)
     events = EventSelector.get_calendar_events(start, end)
     data = [
         {

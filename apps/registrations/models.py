@@ -52,7 +52,7 @@ class Registration(models.Model):
 
     def _generate_qr_code(self):
         qr = qrcode.QRCode(version=1, box_size=10, border=4)
-        qr.add_data(f'EVENTPRO:{self.confirmation_code}')
+        qr.add_data(f'IZAG:{self.confirmation_code}')
         qr.make(fit=True)
         img = qr.make_image(fill_color='black', back_color='white')
         buffer = BytesIO()

@@ -1,5 +1,5 @@
 """Registration business logic."""
-from django.db import transaction
+from django.db import transaction, models
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from .models import Registration
@@ -93,6 +93,3 @@ class RegistrationService:
         registration.checked_in_at = timezone.now()
         registration.save(update_fields=['status', 'checked_in', 'checked_in_at', 'updated_at'])
         return registration
-
-
-from django.db import models

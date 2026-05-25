@@ -1,7 +1,7 @@
 version: '3.9'
 
 x-common-env: &common-env
-  DATABASE_URL: postgres://eventpro:eventpro_secret@db:5432/eventpro
+  DATABASE_URL: postgres://izag:izag_secret@db:5432/izag
   REDIS_URL: redis://redis:6379/0
   SECRET_KEY: dev-secret-key-change-in-production-please
   DJANGO_SETTINGS_MODULE: config.settings.production
@@ -15,11 +15,11 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      POSTGRES_DB: eventpro
-      POSTGRES_USER: eventpro
-      POSTGRES_PASSWORD: eventpro_secret
+      POSTGRES_DB: izag
+      POSTGRES_USER: izag
+      POSTGRES_PASSWORD: izag_secret
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U eventpro"]
+      test: ["CMD-SHELL", "pg_isready -U izag"]
       interval: 10s
       timeout: 5s
       retries: 5

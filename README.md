@@ -1,4 +1,4 @@
-# 🎟️ EventPro — SaaS Event Management Platform
+# 🎟️ Izag Gestión Eventos — Plataforma SaaS de Gestión de Eventos
 
 <div align="center">
 
@@ -110,7 +110,7 @@ Render ejecuta automáticamente:
 ## 📁 Estructura del proyecto
 
 ```
-eventpro/
+izag/
 ├── apps/
 │   ├── users/          # Custom User Model, auth
 │   ├── events/         # Eventos (modelos, vistas, servicios)
