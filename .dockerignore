@@ -1,0 +1,44 @@
+# Entornos virtuales
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Variables de entorno — NUNCA meter al contenedor
+.env
+.env.*
+!.env.example
+
+# Base de datos local
+*.sqlite3
+db.sqlite3-journal
+
+# Archivos de desarrollo
+.git/
+.gitignore
+*.md
+docs/
+coverage/
+htmlcov/
+.coverage
+.pytest_cache/
+.mypy_cache/
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Media y static locales
+media/
+staticfiles/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
