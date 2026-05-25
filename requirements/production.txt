@@ -1,2 +1,7 @@
 -r base.txt
+
+# Email (producción)
+django-anymail==10.3
+
+# Monitoring
 sentry-sdk[django]==2.13.0

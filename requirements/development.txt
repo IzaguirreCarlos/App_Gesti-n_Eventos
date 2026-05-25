@@ -2,6 +2,7 @@
 
 # Dev tools
 django-debug-toolbar==4.4.2
+django-silk==5.1.0
 factory-boy==3.3.1
 Faker==26.0.0
 coverage==7.6.0
